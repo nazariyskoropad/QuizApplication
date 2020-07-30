@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApplication", "QuizAppl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApplication.Contracts", "API Contracts\QuizApplication.Contracts\QuizApplication.Contracts.csproj", "{31723926-4B2B-48E1-AD14-325802DE9209}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApplication.Infrastructure.AppContext", "API Infrastructure\QuizApplication.Infrastructure.AppContext\QuizApplication.Infrastructure.AppContext.csproj", "{D83DF872-D5D1-4712-935D-6CC8C7B429BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{31723926-4B2B-48E1-AD14-325802DE9209}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31723926-4B2B-48E1-AD14-325802DE9209}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31723926-4B2B-48E1-AD14-325802DE9209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
