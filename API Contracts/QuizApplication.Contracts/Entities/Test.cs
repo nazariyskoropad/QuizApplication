@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace QuizApplication.Contracts.Entities
 {
-    public class Test
+    public class Test : BaseEntity
     {
-        public int Id { get; set; }
         public int RunsNumber { get; set; }
         public int TimeLimit { get; set; }
         public double Points { get; set; }
@@ -16,8 +15,8 @@ namespace QuizApplication.Contracts.Entities
         public DateTime EndsAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public List<Question> Questions { get; set; }
-        public List<TestResult> TestResults { get; set; }
+        public ICollection<Question> Questions { get; set; }
+        public ICollection<TestResult> TestResults { get; set; }
 
 
     }

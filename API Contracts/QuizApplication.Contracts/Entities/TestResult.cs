@@ -2,9 +2,8 @@
 
 namespace QuizApplication.Contracts.Entities
 {
-    public class TestResult
+    public class TestResult : BaseEntity
     {
-        public int Id { get; set; }
         public int TestId { get; set; }
         public int CorrectCount { get; set; }
         public int IncorrectCount { get; set; }
@@ -13,5 +12,6 @@ namespace QuizApplication.Contracts.Entities
         public string UserName { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime EndedAt { get; set; }
+        public Test Test { get; set; }
     }
 }
