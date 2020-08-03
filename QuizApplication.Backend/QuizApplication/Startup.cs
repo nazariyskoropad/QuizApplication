@@ -15,19 +15,20 @@ namespace QuizApplication
         {
             Configuration = configuration;
         }
+
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<IAdminRepository, AdminRepository>();
-            services.AddScoped<IQuestionRepository, QuestionRepository>();
-            services.AddScoped<IQuestionAnswerRepository, QuestionAnswerRepository>();
-            services.AddScoped<ITestRepository, TestRepository>();
-            services.AddScoped<ITestResultRepository, TestResultRepository>();
+            services.AddScoped<AdminRepository>();
+            services.AddScoped<QuestionRepository>();
+            services.AddScoped<QuestionAnswerRepository>();
+            services.AddScoped<TestRepository>();
+            services.AddScoped<TestResultRepository>();
 
-            services.AddControllers();        
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
