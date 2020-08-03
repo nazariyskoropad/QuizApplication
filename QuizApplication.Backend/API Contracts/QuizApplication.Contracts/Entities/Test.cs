@@ -17,7 +17,5 @@ namespace QuizApplication.Contracts.Entities
         public DateTime UpdatedAt { get; set; }
         public ICollection<Question> Questions { get; set; }
         public ICollection<TestResult> TestResults { get; set; }
-
-
     }
 }

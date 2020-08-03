@@ -10,10 +10,12 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
         where TEntity : BaseEntity
     {
         protected readonly AppDbContext _dbContext;
+
         public Repository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _dbContext.Set<TEntity>().AddAsync(entity).ConfigureAwait(false);
@@ -34,6 +36,7 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
         {
             await Task.Run(() => _dbContext.Set<TEntity>().RemoveRange(entities)).ConfigureAwait(false);
         }
+
         public async Task<IReadOnlyList<TEntity>> GetAllAsync()
         {
             return await _dbContext.Set<TEntity>().ToListAsync().ConfigureAwait(false);

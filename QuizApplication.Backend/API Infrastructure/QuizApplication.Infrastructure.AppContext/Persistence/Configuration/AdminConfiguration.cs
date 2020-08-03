@@ -11,7 +11,6 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Configuration
         {
             builder.HasKey(a => a.Id);
             builder.Property(a => a.Email).HasMaxLength(PropertyConstrains.EmailLength);
-
         }
     }
 }

@@ -14,7 +14,6 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Configuration
             builder.HasOne(q => q.Test)
                 .WithMany(t => t.Questions)
                 .HasForeignKey(q => q.TestId);
-
         }
     }
 }

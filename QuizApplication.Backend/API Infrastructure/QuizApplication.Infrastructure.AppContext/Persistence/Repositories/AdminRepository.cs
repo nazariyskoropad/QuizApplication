@@ -4,11 +4,11 @@ using QuizApplication.Infrastructure.AppContext.Persistence.Repositories;
 
 namespace QuizApplication.Contracts.Interfaces
 {
-    public class AdminRepository : Repository<Admin>, IAdminRepository
+    public class AdminRepository : Repository<Admin>
     {
         public AdminRepository(AppDbContext dbContext)
         : base(dbContext)
-        { 
+        {
         }
     }
 }

@@ -4,7 +4,7 @@ using QuizApplication.Infrastructure.AppContext.Persistence.Repositories;
 
 namespace QuizApplication.Contracts.Interfaces
 {
-    public class QuestionRepository : Repository<Question>, IQuestionRepository
+    public class QuestionRepository : Repository<Question>
     {
         public QuestionRepository(AppDbContext dbContext)
         : base(dbContext)
