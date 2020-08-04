@@ -50,10 +50,6 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
 
         public async Task<TEntity> GetAsync(System.Func<TEntity, bool> predicate)
         {
-            //return await Task.Run(() => _dbContext.Set<TEntity>().AsNoTracking().Where(predicate)
-            //.Select(a => a).FirstOrDefaultAsync());
-            //return await _dbContext.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(predicate);
-
             return await Task.Run(() => _dbContext.Set<TEntity>().AsNoTracking().FirstOrDefault(predicate));
         }
     }
