@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\API Bussiness Logic\QuizApplication.BusinessLogic\QuizApplication.BusinessLogic.csproj" />
     <ProjectReference Include="..\API Infrastructure\QuizApplication.Infrastructure.AppContext\QuizApplication.Infrastructure.AppContext.csproj" />
   </ItemGroup>
 

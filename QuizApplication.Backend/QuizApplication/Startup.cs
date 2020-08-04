@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -5,10 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using QuizApplication.Infrastructure.AppContext.Persistence;
-using QuizApplication.Contracts.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace QuizApplication
 {
@@ -25,11 +24,6 @@ namespace QuizApplication
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<AdminRepository>();
-            services.AddScoped<QuestionRepository>();
-            services.AddScoped<QuestionAnswerRepository>();
-            services.AddScoped<TestRepository>();
-            services.AddScoped<TestResultRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
@@ -44,6 +38,8 @@ namespace QuizApplication
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
+
+            services.AddScoped<BusinessLogic.Services.AccountService>();
 
             services.AddControllers();
         }
