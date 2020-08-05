@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using QuizApplication.Infrastructure.AppContext.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using QuizApplication.Infrastructure.AppContext.Persistence.Repositories;
+using QuizApplication.Contracts.Entities;
+using Microsoft.OpenApi.Models;
 
 namespace QuizApplication
 {
@@ -41,7 +44,18 @@ namespace QuizApplication
 
             services.AddScoped<BusinessLogic.Services.AccountService>();
 
+            services.AddScoped<Repository<Admin>>();
+
             services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc(Configuration["Swagger:Version"], new OpenApiInfo
+                {
+                    Title = Configuration["Swagger:Title"],
+                    Version = Configuration["Swagger:Version"]
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,6 +64,13 @@ namespace QuizApplication
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint(Configuration["Swagger:Endpoint"], Configuration["Swagger:Title"]);
+            });
 
             app.UseRouting();
 
