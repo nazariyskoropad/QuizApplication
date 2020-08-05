@@ -16,10 +16,10 @@ namespace QuizApplication.BusinessLogic.Services
         private readonly Repository<Admin> _adminRepository;
         private readonly IConfiguration _config;
 
-        public AccountService(IConfiguration config, AppDbContext dbContext)
+        public AccountService(IConfiguration config, Repository<Admin> repository)
         {
             _config = config;
-            _adminRepository = new Repository<Admin>(dbContext);
+            _adminRepository = repository;
         }
 
         public async Task<string> Login(Admin adminLogin)
