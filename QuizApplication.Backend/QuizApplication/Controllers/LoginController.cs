@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizApplication.BusinessLogic.Services;
-using QuizApplication.Contracts.Entities;
+using QuizApplication.Contracts.DTOs;
 
 namespace QuizApplication.Controllers
 {
@@ -19,7 +19,7 @@ namespace QuizApplication.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody]Admin adminLogin)
+        public async Task<IActionResult> Login([FromBody]AdminLoginDto adminLogin)
         {
             var tokenString = await _accountService.Login(adminLogin);
 

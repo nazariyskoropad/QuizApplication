@@ -4,6 +4,7 @@ using QuizApplication.Contracts.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
 {
@@ -48,7 +49,7 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
             return await _dbContext.Set<TEntity>().FindAsync(id).ConfigureAwait(false);
         }
 
-        public async Task<TEntity> GetAsync(System.Func<TEntity, bool> predicate)
+        public async Task<TEntity> GetAsync(Func<TEntity, bool> predicate)
         {
             return await Task.Run(() => _dbContext.Set<TEntity>().AsNoTracking().FirstOrDefault(predicate));
         }

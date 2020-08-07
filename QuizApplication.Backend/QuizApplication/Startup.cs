@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using QuizApplication.Infrastructure.AppContext.Persistence.Repositories;
 using QuizApplication.Contracts.Entities;
 using Microsoft.OpenApi.Models;
+using QuizApplication.Contracts.Interfaces;
 
 namespace QuizApplication
 {
@@ -44,7 +45,7 @@ namespace QuizApplication
 
             services.AddScoped<BusinessLogic.Services.AccountService>();
 
-            services.AddScoped<Repository<Admin>>();
+            services.AddScoped<IRepository<Admin>, Repository<Admin>>();
 
             services.AddControllers();
 

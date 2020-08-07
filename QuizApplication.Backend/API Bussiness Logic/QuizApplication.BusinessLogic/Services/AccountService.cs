@@ -5,24 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using QuizApplication.Contracts.DTOs;
 using QuizApplication.Contracts.Entities;
-using QuizApplication.Infrastructure.AppContext.Persistence;
-using QuizApplication.Infrastructure.AppContext.Persistence.Repositories;
+using QuizApplication.Contracts.Interfaces;
 
 namespace QuizApplication.BusinessLogic.Services
 {
     public class AccountService
     {
-        private readonly Repository<Admin> _adminRepository;
+        private readonly IRepository<Admin> _adminRepository;
         private readonly IConfiguration _config;
 
-        public AccountService(IConfiguration config, Repository<Admin> repository)
+        public AccountService(IConfiguration config, IRepository<Admin> repository)
         {
             _config = config;
             _adminRepository = repository;
         }
 
-        public async Task<string> Login(Admin adminLogin)
+        public async Task<string> Login(AdminLoginDto adminLogin)
         {
             var user = await AuthenticateUserAsync(adminLogin);
 
@@ -55,10 +55,12 @@ namespace QuizApplication.BusinessLogic.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<Admin> AuthenticateUserAsync(Admin adminLogin)
+        private async Task<Admin> AuthenticateUserAsync(AdminLoginDto adminLogin)
         {
-            var user = await _adminRepository.GetAsync(a => a.Email == adminLogin.Email);
-            if (user.Password == adminLogin.Password)
+            var user = await _adminRepository
+                .GetAsync(a => a.Email == adminLogin.Email && a.Password == adminLogin.Password);
+
+            if (user != null)
             {
                 return user;
             }
