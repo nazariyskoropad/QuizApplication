@@ -4,10 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApplication", "QuizApplication\QuizApplication.csproj", "{82934EDA-A780-4BBF-84BF-70C23A29BE84}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F581DA68-E66C-48A1-B95B-BF3BA39D5A5B} = {F581DA68-E66C-48A1-B95B-BF3BA39D5A5B}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApplication.Contracts", "API Contracts\QuizApplication.Contracts\QuizApplication.Contracts.csproj", "{31723926-4B2B-48E1-AD14-325802DE9209}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApplication.Contracts", "API Contracts\QuizApplication.Contracts\QuizApplication.Contracts.csproj", "{31723926-4B2B-48E1-AD14-325802DE9209}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApplication.Infrastructure.AppContext", "API Infrastructure\QuizApplication.Infrastructure.AppContext\QuizApplication.Infrastructure.AppContext.csproj", "{D83DF872-D5D1-4712-935D-6CC8C7B429BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApplication.Infrastructure.AppContext", "API Infrastructure\QuizApplication.Infrastructure.AppContext\QuizApplication.Infrastructure.AppContext.csproj", "{D83DF872-D5D1-4712-935D-6CC8C7B429BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApplication.BusinessLogic", "API Bussiness Logic\QuizApplication.BusinessLogic\QuizApplication.BusinessLogic.csproj", "{F581DA68-E66C-48A1-B95B-BF3BA39D5A5B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31723926-4B2B-48E1-AD14-325802DE9209} = {31723926-4B2B-48E1-AD14-325802DE9209}
+		{D83DF872-D5D1-4712-935D-6CC8C7B429BF} = {D83DF872-D5D1-4712-935D-6CC8C7B429BF}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +36,10 @@ Global
 		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D83DF872-D5D1-4712-935D-6CC8C7B429BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F581DA68-E66C-48A1-B95B-BF3BA39D5A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F581DA68-E66C-48A1-B95B-BF3BA39D5A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F581DA68-E66C-48A1-B95B-BF3BA39D5A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F581DA68-E66C-48A1-B95B-BF3BA39D5A5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
