@@ -12,6 +12,9 @@ using QuizApplication.Infrastructure.AppContext.Persistence.Repositories;
 using QuizApplication.Contracts.Entities;
 using Microsoft.OpenApi.Models;
 using QuizApplication.Contracts.Interfaces;
+using QuizApplication.BusinessLogic.Services;
+using AutoMapper;
+using QuizApplication.BusinessLogic.MappingProfiles;
 
 namespace QuizApplication
 {
@@ -43,9 +46,15 @@ namespace QuizApplication
                 };
             });
 
-            services.AddScoped<BusinessLogic.Services.AccountService>();
+            services.AddScoped<AccountService>();
+            services.AddScoped<TestService>();
 
             services.AddScoped<IRepository<Admin>, Repository<Admin>>();
+            services.AddScoped<IRepository<Test>, Repository<Test>>();
+
+            MapperConfiguration mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddControllers();
 
