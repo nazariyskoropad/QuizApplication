@@ -21,35 +21,17 @@ namespace QuizApplication.Controllers
         [HttpGet("{id}")]
         public ActionResult<TestDto> GetTestById(int id)
         {
-            try
-            {
-                var test = _testService.GetTestById(id);
+            var test = _testService.GetTestById(id);
 
-                return Ok(test);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return BadRequest("Failed to get a test");
+            return Ok(test);
         }
 
         [HttpGet]
         public ActionResult<TestDto> GetAllTests()
         {
-            try
-            {
-                var tests = _testService.GetAllTests();
+            var tests = _testService.GetAllTests();
 
-                return Ok(tests);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return BadRequest("Failed to get all tests");
+            return Ok(tests);
         }
 
         [HttpPost]
@@ -58,16 +40,9 @@ namespace QuizApplication.Controllers
         {
             if (test != null && ModelState.IsValid)
             {
-                try
-                {
-                    var newTest = await _testService.AddTestAsync(test);
+                var newTest = await _testService.AddTestAsync(test);
 
-                    return CreatedAtAction("GetTest", new { id = newTest.Id }, newTest);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                return CreatedAtAction("GetTest", new { id = newTest.Id }, newTest);
             }
 
             return BadRequest("Failed to create a new test");
@@ -79,37 +54,21 @@ namespace QuizApplication.Controllers
         {
             if (test != null && ModelState.IsValid)
             {
-                try
-                {
-                    var updatedTest = await _testService.UpdateTestAsync(id, test);
+                var updatedTest = await _testService.UpdateTestAsync(id, test);
 
-                    return Ok(updatedTest);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                return Ok(updatedTest);
             }
 
-            return BadRequest("Failed to create a new test");
+            return BadRequest("Failed to update test");
         }
 
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<ActionResult<TestDto>> DeleteTest(int id)
         {
-            try
-            {
-                await _testService.DeleteTestAsync(id);
+            await _testService.DeleteTestAsync(id);
 
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return BadRequest("Failed to delete a test");
+            return NoContent();
         }
     }
 }
