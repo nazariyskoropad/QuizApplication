@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuizApplication.Contracts.DTOs
 {
-    public class QuestionDto 
+    public class QuestionDto : BaseDto
     {
         public int TestId { get; set; }
 
