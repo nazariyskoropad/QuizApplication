@@ -9,6 +9,7 @@ namespace QuizApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TestController : ControllerBase
     {
         private readonly TestService _testService;
@@ -19,6 +20,7 @@ namespace QuizApplication.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<TestDto> GetTestById(int id)
         {
             var test = _testService.GetTestById(id);
@@ -35,7 +37,6 @@ namespace QuizApplication.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<TestDto>> CreateTest([FromBody]TestDto test)
         {
             if (test != null && ModelState.IsValid)
@@ -49,7 +50,6 @@ namespace QuizApplication.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<ActionResult<TestDto>> UpdateTest(int id, [FromBody] TestDto test)
         {
             if (test != null && ModelState.IsValid)
@@ -63,12 +63,25 @@ namespace QuizApplication.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<ActionResult<TestDto>> DeleteTest(int id)
         {
             await _testService.DeleteTestAsync(id);
 
             return NoContent();
+        }
+
+        [HttpPost("{testId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<TestResultDto>> GetTestResult(int testId, [FromBody] UserAnswersDto userAnswersDto)
+        {
+            if (userAnswersDto != null && ModelState.IsValid)
+            {
+                var testResult = await _testService.GetTestResult(testId, userAnswersDto);
+
+                return Ok(testResult);
+            }
+
+            return BadRequest("Failed to update test");
         }
     }
 }
