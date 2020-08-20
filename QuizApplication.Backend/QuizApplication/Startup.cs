@@ -15,6 +15,7 @@ using QuizApplication.Contracts.Interfaces;
 using QuizApplication.BusinessLogic.Services;
 using AutoMapper;
 using QuizApplication.BusinessLogic.MappingProfiles;
+using QuizApplication.CustomMiddleware;
 
 namespace QuizApplication
 {
@@ -51,6 +52,7 @@ namespace QuizApplication
 
             services.AddScoped<IRepository<Admin>, Repository<Admin>>();
             services.AddScoped<IRepository<Test>, Repository<Test>>();
+            services.AddScoped<IRepository<TestResult>, Repository<TestResult>>();
 
             MapperConfiguration mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
             IMapper mapper = mappingConfig.CreateMapper();
@@ -87,6 +89,8 @@ namespace QuizApplication
             app.UseAuthentication();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
