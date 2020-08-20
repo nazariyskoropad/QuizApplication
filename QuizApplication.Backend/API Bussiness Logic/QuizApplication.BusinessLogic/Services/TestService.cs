@@ -113,7 +113,12 @@ namespace QuizApplication.BusinessLogic.Services
                     }
 
                     var answer = testQuestion.QuestionAnswers.FirstOrDefault(qa => qa.Id == qapair.AnswerId);
-                    if (answer != null && answer.IsCorrect)
+                    if (answer == null)
+                    {
+                        throw new ArgumentException("No answer with this id");
+                    }
+
+                    if (answer.IsCorrect)
                     {
                         testResult.CorrectCount++;
                         testResult.Points += testQuestion.Points;
