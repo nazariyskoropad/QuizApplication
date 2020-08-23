@@ -47,6 +47,8 @@ namespace QuizApplication
                 };
             });
 
+            services.AddCors();
+
             services.AddScoped<AccountService>();
             services.AddScoped<TestService>();
 
@@ -83,6 +85,9 @@ namespace QuizApplication
             {
                 c.SwaggerEndpoint(Configuration["Swagger:Endpoint"], Configuration["Swagger:Title"]);
             });
+
+            app.UseCors(builder =>
+                builder.WithOrigins(Configuration["Client_URL"].ToString()).AllowAnyHeader().AllowAnyMethod());
 
             app.UseRouting();
 
