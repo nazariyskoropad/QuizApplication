@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using QuizApplication.Contracts.DTOs;
@@ -22,34 +26,105 @@ namespace QuizApplication.BusinessLogic.Services
             _adminRepository = repository;
         }
 
-        public async Task<string> Login(AdminLoginDto adminLogin)
+        public async Task<AuthenticateResponseDto> Login(AdminLoginDto adminLogin)
         {
             var user = await AuthenticateUserAsync(adminLogin);
 
             if (user != null)
             {
-                var tokenString = GenerateJSONWebToken(user);
-                return tokenString;
+                var jwtToken = GenerateJSONWebToken(user);
+                var refreshToken = GenerateRefreshToken(user);
+                user.RefreshTokens.Add(refreshToken);
+                await _adminRepository.UpdateAsync(user);
+
+                return new AuthenticateResponseDto(user, jwtToken, refreshToken.Token);
             }
 
             return null;
         }
 
-        private string GenerateJSONWebToken(Admin adminLogin)
+        public async Task<AuthenticateResponseDto> RefreshTokenAsync(string token)
+        {
+            var admins = await _adminRepository.GetWithInclude<Admin>(
+                        a => true,
+                        t => t.Include(t => t.RefreshTokens)).ToListAsync();
+
+            var admin = admins.FirstOrDefault(a => a.RefreshTokens.Any(t => t.Token == token));
+
+            if (admin == null) 
+                return null;
+
+            var refreshToken = admin.RefreshTokens.Single(x => x.Token == token);
+
+            if (!refreshToken.IsActive) 
+                return null;
+
+            var newRefreshToken = GenerateRefreshToken(admin);
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.ReplacedByToken = newRefreshToken.Token;
+            admin.RefreshTokens.Add(newRefreshToken);
+
+            await _adminRepository.UpdateAsync(admin);
+
+            var jwtToken = GenerateJSONWebToken(admin);
+
+            return new AuthenticateResponseDto(admin, jwtToken, newRefreshToken.Token);
+        }
+
+        public async Task<bool> RevokeTokenAsync(string token)
+        {
+            var admins = await _adminRepository.GetWithInclude<Admin>(
+                                    a => true,
+                                    t => t.Include(t => t.RefreshTokens)).ToListAsync();
+
+            var admin = admins.FirstOrDefault(a => a.RefreshTokens.Any(t => t.Token == token));
+
+            if (admin == null)
+                return false;
+
+            var refreshToken = admin.RefreshTokens.Single(x => x.Token == token);
+
+            if (!refreshToken.IsActive)
+                return false;
+
+            refreshToken.Revoked = DateTime.UtcNow;
+
+            await _adminRepository.UpdateAsync(admin);
+
+            return true;
+        }
+
+        private RefreshToken GenerateRefreshToken(Admin admin)
+        {
+            using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
+            {
+                var randomBytes = new byte[64];
+                rngCryptoServiceProvider.GetBytes(randomBytes);
+                return new RefreshToken
+                {
+                    AdminId = admin.Id,
+                    Token = Convert.ToBase64String(randomBytes),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    Created = DateTime.UtcNow,
+                };
+            }
+        }
+
+        private string GenerateJSONWebToken(Admin admin)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Email, adminLogin.Email),
+                new Claim(JwtRegisteredClaimNames.Email, admin.Email),
             };
 
             var token = new JwtSecurityToken(
               _config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
               claims,
-              expires: DateTime.Now.AddMinutes(120),
+              expires: DateTime.Now.AddMinutes(5),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
