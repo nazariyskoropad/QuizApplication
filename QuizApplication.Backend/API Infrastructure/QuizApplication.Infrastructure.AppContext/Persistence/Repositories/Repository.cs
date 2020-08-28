@@ -44,14 +44,7 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
 
         public async Task UpdateAsync(TEntity entityToUpdate)
         {
-            var entity = await _dbContext.Set<TEntity>().FindAsync(entityToUpdate.Id);
-            if (entity != null)
-            {
-                // To Avoid tracking error
-                _dbContext.Entry(entity).State = EntityState.Detached;
-            }
-
-            _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
+            _dbContext.Update(entityToUpdate);
             await _dbContext.SaveChangesAsync();
         }
 
