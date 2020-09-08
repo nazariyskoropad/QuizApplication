@@ -50,12 +50,12 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe({
                 next: () => {
-                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-                    this.router.navigate([returnUrl]);
+                    this.router.navigate(['/']);
                 },
                 error: error => {
                     this.error = error;
                     this.loading = false;
+                    console.log(error);
                     this.errormessage = 'No user with such credentials'
                 }
             });
