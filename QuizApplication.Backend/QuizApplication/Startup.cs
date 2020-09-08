@@ -87,7 +87,7 @@ namespace QuizApplication
             });
 
             app.UseCors(builder =>
-                builder.WithOrigins(Configuration["Client_URL"].ToString()).AllowAnyHeader().AllowAnyMethod());
+                builder.WithOrigins(Configuration["Client_URL"].ToString()).AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
             app.UseRouting();
 
