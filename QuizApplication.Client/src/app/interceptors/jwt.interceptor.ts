@@ -10,10 +10,10 @@ export class JwtInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let currentAdmin = this.authenticationService.currentAdminValue;
-        if (currentAdmin && currentAdmin.token) {
+        if (currentAdmin && currentAdmin.jwtToken) {
             request = request.clone({
                 setHeaders: {
-                    Authorization: `Bearer ${currentAdmin.token}`
+                    Authorization: `Bearer ${currentAdmin.jwtToken}`
                 }
             });
         }
