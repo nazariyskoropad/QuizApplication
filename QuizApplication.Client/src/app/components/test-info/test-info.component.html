@@ -1,0 +1,22 @@
+<div>
+    <button  class="btn btn-danger m-1" (click)="deleteTest(test.id)">
+        Delete
+      </button>
+      <button  class="btn btn-warning m-1" (click)="editTest(test.id)">
+        Edit
+      </button>
+    <h1>Name: {{test.name}}</h1>
+    <p>Description: {{test.description}}</p>
+    <ol>
+        <li *ngFor="let question of test.questions">
+            <p>{{question.description}}</p>
+            <ol>
+                <li *ngFor="let qa of question.questionAnswers">
+                    <p>{{qa.description}}  {{qa.isCorrect}}</p>
+                </li>
+            </ol>
+ 
+        </li>
+    </ol>
+
+</div>
