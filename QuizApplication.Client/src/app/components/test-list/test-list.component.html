@@ -1,0 +1,23 @@
+<div >
+    <br><br>
+    <div *ngIf='loading' class='col-9 center text-center'>
+      <br><br>
+      <span class="spinner-border spinner-border-bg mr-1"></span>
+    </div>
+    <div *ngIf='!loading'>
+        <div *ngFor='let test of tests;'>     
+            <a [routerLink]="['/', 'admin', 'tests', test.id]">              
+                <h4>
+                    {{ test.name }}
+                </h4>
+            </a>               
+            <div>
+                <p>
+                Description: {{ test.description }} 
+                </p>
+                <p>Created at {{test.createdAt | date}} </p>
+                <p>Username: {{test.userName}}</p>               
+            </div><br>
+        </div>
+    </div>
+</div>

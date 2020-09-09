@@ -21,7 +21,7 @@ export class AuthenticationService {
     }
 
     login(email: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}/account/login`, { email, password })
+        return this.http.post<any>(`${environment.apiUrl}/account/login`, { email, password }, { withCredentials: true })
             .pipe(map(Admin => {
                 localStorage.setItem('currentAdmin', JSON.stringify(Admin));
                 this.currentAdminSubject.next(Admin);
@@ -31,7 +31,7 @@ export class AuthenticationService {
     }
 
     logout() {
-        this.http.post<any>(`${environment.apiUrl}/account/revoke-token`, {}, { withCredentials: true }).subscribe();
+        this.http.post<any>(`${environment.apiUrl}/account/revoke-token`, {}, { withCredentials: true });
         this.stopRefreshTokenTimer();
         localStorage.removeItem('currentAdmin');
         this.currentAdminSubject.next(null);
@@ -49,7 +49,7 @@ export class AuthenticationService {
     private refreshTokenTimeout;
 
     private startRefreshTokenTimer() {
-        const jwtToken = JSON.parse(atob(this.currentAdminValue.token.split('.')[1]));
+        const jwtToken = JSON.parse(atob(this.currentAdminValue.jwtToken.split('.')[1]));
 
         // set a timeout to refresh the token a minute before it expires
         const expires = new Date(jwtToken.exp * 1000);

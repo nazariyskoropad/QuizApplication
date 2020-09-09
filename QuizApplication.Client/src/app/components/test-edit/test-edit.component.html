@@ -1,0 +1,121 @@
+<h1>Edit test:</h1>
+
+<div>
+    <form [formGroup]="editForm" (ngSubmit)="edit()">
+        <div class="form-group">
+            <label for="TestName">Test name</label>
+            <input type="text" class="form-control" id="TestName" formControlName="TestName"
+            [ngClass]="{ 'is-invalid': submitted && f.TestName.errors }">           
+            <div *ngIf="submitted && f.TestName.errors" class="invalid-feedback">
+                <div *ngIf="f.TestName.errors.required">Test Name is required</div>
+                <div *ngIf="f.TestName.errors.maxlength">Max length is 200 symbols</div>
+            </div>  
+        </div>
+
+         <div class="form-group">
+            <label for="TestUserName">Username </label>
+            <input type="text" class="form-control" id="TestUserName" formControlName="TestUserName"
+            [ngClass]="{ 'is-invalid': submitted && f.TestUserName.errors }">           
+            <div *ngIf="submitted && f.TestUserName.errors" class="invalid-feedback">
+                <div *ngIf="f.TestUserName.errors.maxlength">Max length is 200 symbols</div>
+            </div>  
+        </div>
+        <div class="form-group">
+            <label for="TestDescription">Test Description</label>
+            <textarea type="text" rows="7" class="form-control" id="TestDescription" formControlName="TestDescription"></textarea>         
+        </div>  
+        <div class="row">
+            <div class="form-group col">
+                <label for="TestStartsAt">Test starts at</label>
+                <input type="datetime-local" class="form-control" id="TestStartsAt" formControlName="TestStartsAt"
+                [ngClass]="{ 'is-invalid': submitted && f.TestStartsAt.errors }">           
+                <div *ngIf="submitted && f.TestStartsAt.errors" class="invalid-feedback">
+                    <div *ngIf="f.TestStartsAt.errors.required">TestStartsAt is required</div>
+                </div>
+            </div>
+            <div class="form-group col">
+                <label for="TestEndsAt">Test ends at</label>
+                <input type="datetime-local" class="form-control" id="TestEndsAt" formControlName="TestEndsAt"
+                    [ngClass]="{ 'is-invalid': submitted && f.TestEndsAt.errors }">           
+                <div *ngIf="submitted && f.TestEndsAt.errors" class="invalid-feedback">
+                    <div *ngIf="f.TestEndsAt.errors.required">TestEndsAt is required</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col">
+                <label for="TestTimeLimit">Test time limit (in minutes)</label>
+                <input type="number" class="form-control" id="TestTimeLimit" formControlName="TestTimeLimit"
+                    [ngClass]="{ 'is-invalid': submitted && f.TestTimeLimit.errors }">           
+                <div *ngIf="submitted && f.TestTimeLimit.errors" class="invalid-feedback">
+                    <div *ngIf="f.TestTimeLimit.errors.required">TestTimeLimit is required</div>
+                </div>
+            </div>    
+            <div class="form-group col">
+                <label for="TestPoints">Test Points</label>
+                <input type="number" class="form-control" id="TestPoints" formControlName="TestPoints"
+                    [ngClass]="{ 'is-invalid': submitted && f.TestPoints.errors }">           
+                <div *ngIf="submitted && f.TestPoints.errors" class="invalid-feedback">
+                    <div *ngIf="f.TestPoints.errors.required">TestPoints is required</div>
+                </div>
+            </div>  
+            <div class="form-group col">
+                <label for="TestRunsNumber">Possible number of runs</label>
+                <input type="number" class="form-control" id="TestRunsNumber" formControlName="TestRunsNumber"
+                    [ngClass]="{ 'is-invalid': submitted && f.TestRunsNumber.errors }">           
+                <div *ngIf="submitted && f.TestRunsNumber.errors" class="invalid-feedback">
+                    <div *ngIf="f.TestRunsNumber.errors.required">TestRunsNumber is required</div>
+                </div>
+            </div>  
+        </div>
+        <div formArrayName="Questions" >
+            <div *ngFor="let question of questionForms.controls; let i=index" [formGroupName]="i" class="shadow-lg p-3 mb-5 bg-white rounded offset">
+                <div class="form-group">
+                    <label for="QuestionDescription">Question Description</label>
+                    <textarea type="text" rows="3" type="text" class="form-control" id="QuestionDescription" formControlName="QuestionDescription"></textarea>
+                </div> 
+                <div class="row">
+                    <div class="form-group col">
+                        <label for="QuestionPoints">Question Points</label>
+                        <input type="number" class="form-control" id="QuestionPoints" formControlName="QuestionPoints">
+                    </div>  
+                    <div class="form-group col">
+                        <label for="QuestionTimeLimit">Question time limit (in minutes)</label>
+                        <input type="number" class="form-control" id="QuestionTimeLimit" formControlName="QuestionTimeLimit">
+                    </div>
+                </div>
+
+                <div formArrayName="QuestionAnswers">
+                        <div *ngFor="let qa of question.get('QuestionAnswers').controls; let j=index" [formGroupName]="j"  class="shadow-lg p-3 mb-5 bg-white rounded offset">
+                        <div class="form-group">
+                            <p>Question Answer</p>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <div class="input-group-text">
+                                    <input type="checkbox" aria-label="Checkbox for following text input"  formControlName="QaIsTrue">
+                                  </div>
+                                </div>
+                            <input type="text" type="text" class="form-control" id="QaDescription" formControlName="QaDescription">
+                              </div>                       
+                        </div> 
+
+                        <button type="button" class="btn btn-danger" (click)="deleteQA(question, j)">Delete QA</button>
+
+                    </div>
+                </div>
+               
+                <button type="button" class="btn btn-success" (click)="addQA(question)">Add question answer</button>
+
+
+                <button type="button" class="btn btn-danger" (click)="deleteQuestion(i)">Delete question</button>
+
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-success" (click)="addQuestion()">Add question</button>
+
+        <button type="submit" class="btn btn-warning container">
+            Edit
+        </button>
+    </form>    
+</div>
