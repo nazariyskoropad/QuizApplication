@@ -44,7 +44,10 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
 
         public async Task UpdateAsync(TEntity entityToUpdate)
         {
-            _dbContext.Update(entityToUpdate);
+            var entity = await _dbContext.Set<TEntity>().FindAsync(entityToUpdate.Id); // To Avoid tracking error
+            if (entity != null)
+                _dbContext.Entry(entity).State = EntityState.Detached;
+            _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
 
@@ -67,6 +70,25 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence.Repositories
             }
 
             return result.AsQueryable();
+        }
+
+        public async Task DeleteRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await Task.Run(() => _dbContext.Set<TEntity>().RemoveRange(entities)).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbContext.Set<TEntity>().AddRangeAsync(entities).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<TEntity> Update(TEntity entityToUpdate)
+        {
+            _dbContext.Set<TEntity>().Update(entityToUpdate);
+            await _dbContext.SaveChangesAsync();
+            return entityToUpdate;
         }
     }
 }
