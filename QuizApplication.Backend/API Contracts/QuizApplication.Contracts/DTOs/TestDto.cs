@@ -34,5 +34,6 @@ namespace QuizApplication.Contracts.DTOs
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ICollection<QuestionDto> Questions { get; set; }
+        public ICollection<TestResultDto> TestResults { get; set; }
     }
 }

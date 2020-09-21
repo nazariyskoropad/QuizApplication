@@ -15,6 +15,7 @@ namespace QuizApplication.Infrastructure.AppContext.Persistence
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<TestResult> TestResults { get; set; }
+        public DbSet<TestAccessConfig> TestAccessConfigs { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
