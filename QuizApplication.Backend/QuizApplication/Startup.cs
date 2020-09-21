@@ -51,10 +51,13 @@ namespace QuizApplication
 
             services.AddScoped<AccountService>();
             services.AddScoped<TestService>();
+            services.AddScoped<TestAccessConfigService>();
 
             services.AddScoped<IRepository<Admin>, Repository<Admin>>();
             services.AddScoped<IRepository<Test>, Repository<Test>>();
             services.AddScoped<IRepository<TestResult>, Repository<TestResult>>();
+            services.AddScoped<IRepository<Question>, Repository<Question>>();
+            services.AddScoped<IRepository<TestAccessConfig>, Repository<TestAccessConfig>>();
 
             MapperConfiguration mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
             IMapper mapper = mappingConfig.CreateMapper();

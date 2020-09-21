@@ -31,7 +31,7 @@ export class AuthenticationService {
     }
 
     logout() {
-        this.http.post<any>(`${environment.apiUrl}/account/revoke-token`, {}, { withCredentials: true });
+        this.http.post<any>(`${environment.apiUrl}/account/revoke-token`, {}, { withCredentials: true }).subscribe();
         this.stopRefreshTokenTimer();
         localStorage.removeItem('currentAdmin');
         this.currentAdminSubject.next(null);

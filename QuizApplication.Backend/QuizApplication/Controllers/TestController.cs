@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +13,14 @@ namespace QuizApplication.Controllers
     public class TestController : ControllerBase
     {
         private readonly TestService _testService;
+        private readonly TestAccessConfigService _testAccessConfigService;
 
-        public TestController(TestService testService)
+        public TestController(
+            TestService testService,
+            TestAccessConfigService testAccessConfigService)
         {
             _testService = testService;
+            _testAccessConfigService = testAccessConfigService;
         }
 
         [HttpGet("{id}")]
@@ -26,6 +30,20 @@ namespace QuizApplication.Controllers
             var test = _testService.GetTestById(id);
 
             return Ok(test);
+        }
+
+        [HttpGet("{testId}/{link}")]
+        [AllowAnonymous]
+        public ActionResult<TestAccessConfigDto> GetTestByLink(int testId, string link)
+        {
+            var testAccessConfigDto = _testAccessConfigService.GetTestByLink(testId, link);
+
+            if (testAccessConfigDto != null)
+            {
+                return Ok(testAccessConfigDto);
+            }
+
+            return BadRequest("No test with such link or id");
         }
 
         [HttpGet]
@@ -43,7 +61,7 @@ namespace QuizApplication.Controllers
             {
                 var newTest = await _testService.AddTestAsync(test);
 
-                return CreatedAtAction("GetTest", new { id = newTest.Id }, newTest);
+                return Ok(newTest);
             }
 
             return BadRequest("Failed to create a new test");
@@ -82,6 +100,35 @@ namespace QuizApplication.Controllers
             }
 
             return BadRequest("Failed to update test");
+        }
+
+        [Route("access-config/{testId}")]
+        [HttpGet]
+        public ActionResult<TestAccessConfigDto> GetTestAccessConfig(int testId)
+        {
+            var testAccessConfig = _testAccessConfigService.GetTestAccessConfigByTestId(testId);
+
+            return Ok(testAccessConfig);
+        }
+
+        [Route("access-config/{testId}")]
+        [HttpPost]
+        public async Task<ActionResult<TestAccessConfigDto>> CreateTestAccessConfig(
+            int testId,
+            [FromBody] IEnumerable<TestAccessConfigDto> testAccessConfigs)
+        {
+            await _testAccessConfigService.CreateTestAccessConfigs(testId, testAccessConfigs);
+
+            return Ok();
+        }
+
+        [Route("access-config/{testAccessConfigId}")]
+        [HttpDelete]
+        public async Task<ActionResult<TestAccessConfigDto>> DeleteTestAccessConfig(int testAccessConfigId)
+        {
+            await _testAccessConfigService.DeleteTestAccessConfigAsync(testAccessConfigId);
+
+            return Ok();
         }
     }
 }

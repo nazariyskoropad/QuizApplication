@@ -12,14 +12,7 @@
             </div>  
         </div>
 
-         <div class="form-group">
-            <label for="TestUserName">Username </label>
-            <input type="text" class="form-control" id="TestUserName" formControlName="TestUserName"
-            [ngClass]="{ 'is-invalid': submitted && f.TestUserName.errors }">           
-            <div *ngIf="submitted && f.TestUserName.errors" class="invalid-feedback">
-                <div *ngIf="f.TestUserName.errors.maxlength">Max length is 200 symbols</div>
-            </div>  
-        </div>
+   
         <div class="form-group">
             <label for="TestDescription">Test Description</label>
             <textarea type="text" rows="7" class="form-control" id="TestDescription" formControlName="TestDescription"></textarea>         
@@ -58,15 +51,7 @@
                 <div *ngIf="submitted && f.TestPoints.errors" class="invalid-feedback">
                     <div *ngIf="f.TestPoints.errors.required">TestPoints is required</div>
                 </div>
-            </div>  
-            <div class="form-group col">
-                <label for="TestRunsNumber">Possible number of runs</label>
-                <input type="number" class="form-control" id="TestRunsNumber" formControlName="TestRunsNumber"
-                    [ngClass]="{ 'is-invalid': submitted && f.TestRunsNumber.errors }">           
-                <div *ngIf="submitted && f.TestRunsNumber.errors" class="invalid-feedback">
-                    <div *ngIf="f.TestRunsNumber.errors.required">TestRunsNumber is required</div>
-                </div>
-            </div>  
+            </div>   
         </div>
         <div formArrayName="Questions" >
             <div *ngFor="let question of questionForms.controls; let i=index" [formGroupName]="i" class="shadow-lg p-3 mb-5 bg-white rounded offset">

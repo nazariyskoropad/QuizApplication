@@ -5,6 +5,7 @@ import { TestService } from 'src/app/services/test.service';
 import { Router } from '@angular/router';
 import { QuestionAnswer } from 'src/app/models/questionAnswer';
 import { Question } from 'src/app/models/question';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-test-add',
@@ -34,7 +35,6 @@ export class TestAddComponent implements OnInit {
       TestDescription: ['', [Validators.required, Validators.maxLength(200)]],
       TestTimeLimit: ['', Validators.required],
       TestPoints: ['', Validators.required],
-      TestUserName: ['', [Validators.maxLength(200)]],
       TestStartsAt: ['', Validators.required],
       TestEndsAt: ['', Validators.required],
       TestRunsNumber: ['', Validators.required],
@@ -80,10 +80,16 @@ export class TestAddComponent implements OnInit {
     return this.addForm.controls;
   }
 
-  add(){
+  createNewTest(){
     this.submitted = true;
 
     if (this.addForm.invalid) {
+      return;
+    }
+    
+    if(!this.validatePoints())
+    {
+      alert('Sum of points for question is not equal to test points')
       return;
     }
 
@@ -98,15 +104,19 @@ export class TestAddComponent implements OnInit {
     })
   }
 
+  validatePoints() {
+    let questionPoints = 0;
+    this.f.Questions.value.forEach(q => questionPoints += q.QuestionPoints)
+    return this.f.TestPoints.value == questionPoints;
+  }
+
   initializeTest() {
     this.test = new TestDetailed();
 
     this.test.name = this.f.TestName.value;
     this.test.description = this.f.TestDescription.value;
     this.test.points = this.f.TestPoints.value;
-    this.test.runsNumber = this.f.TestRunsNumber.value;
     this.test.timeLimit = this.f.TestTimeLimit.value;
-    this.test.userName = this.f.TestUserName.value;
     this.test.startsAt = this.f.TestStartsAt.value;
     this.test.endsAt = this.f.TestEndsAt.value;
     
