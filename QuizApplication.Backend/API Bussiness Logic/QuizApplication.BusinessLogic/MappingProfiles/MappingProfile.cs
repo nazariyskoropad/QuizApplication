@@ -24,6 +24,9 @@ namespace QuizApplication.BusinessLogic.MappingProfiles
 
             CreateMap<TestResult, TestResultDto>()
                 .ReverseMap();
+
+            CreateMap<TestAccessConfig, TestAccessConfigDto>()
+                .ReverseMap();
         }
     }
 }

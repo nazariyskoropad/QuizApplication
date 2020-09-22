@@ -14,14 +14,18 @@ namespace QuizApplication.BusinessLogic.Services
     {
         private readonly IRepository<Test> _testRepository;
         private readonly IRepository<TestResult> _testResultRepository;
+        private readonly IRepository<Question> _questionRepository;
         private readonly IMapper _mapper;
 
         public TestService(
             IRepository<Test> testRepository,
-            IRepository<TestResult> testResultRepository, IMapper mapper)
+            IRepository<TestResult> testResultRepository,
+            IRepository<Question> questionRepository,
+            IRepository<TestAccessConfig> testAccessConfigRepository, IMapper mapper)
         {
             _testRepository = testRepository;
             _testResultRepository = testResultRepository;
+            _questionRepository = questionRepository;
             _mapper = mapper;
         }
 
@@ -41,6 +45,7 @@ namespace QuizApplication.BusinessLogic.Services
                 r => r
                     .Include(c => c.Questions)
                     .ThenInclude(g => g.QuestionAnswers))
+                    .Include(t => t.TestResults)
                     .FirstOrDefault();
 
             return _mapper.Map<TestDto>(test);
@@ -57,9 +62,16 @@ namespace QuizApplication.BusinessLogic.Services
             var test = _mapper.Map<Test>(testDto);
             test.UpdatedAt = DateTime.Now;
 
+            var testToUpdate = _testRepository.GetWithInclude<Test>(
+                x => x.Id == id,
+                r => r
+                .Include(c => c.Questions)).FirstOrDefault();
+            await _questionRepository.DeleteRangeAsync(testToUpdate.Questions);
+            await _questionRepository.AddRangeAsync(test.Questions);
+
             await _testRepository.UpdateAsync(test);
 
-            var updatedTest = GetTestById(id);
+            var updatedTest = await _testRepository.GetByIdAsync(id);
 
             return _mapper.Map<TestDto>(updatedTest);
         }
@@ -83,10 +95,11 @@ namespace QuizApplication.BusinessLogic.Services
             testResult.StartedAt = userAnswersDto.StartedAt;
             testResult.EndedAt = userAnswersDto.EndedAt;
             testResult.UserName = userAnswersDto.UserName;
+            testResult.Points = Math.Round(testResult.Points);
 
-            await _testResultRepository.AddAsync(testResult);
+            var addedTestResult = await _testResultRepository.AddAsync(testResult);
 
-            return _mapper.Map<TestResultDto>(testResult);
+            return _mapper.Map<TestResultDto>(addedTestResult);
         }
 
         private TestResult ComputeResults(int testId, UserAnswersDto userAnswersDto)
@@ -98,35 +111,56 @@ namespace QuizApplication.BusinessLogic.Services
 
             var userQApairs = userAnswersDto.QApairs.ToList();
 
-            foreach (var qapair in userQApairs)
+            foreach (var question in testQuestions)
             {
-                if (qapair.AnswerId == 0)
+                var userAnswersToQuestion = userQApairs.Where(ua => ua.QuestionId == question.Id).ToList();
+                if (userAnswersToQuestion.Count == 0)
                 {
                     testResult.SkippedCount++;
                 }
                 else
                 {
-                    var testQuestion = testQuestions.FirstOrDefault(q => q.Id == qapair.QuestionId);
-                    if (testQuestion == null)
+                    var questionAnswersCount = question.QuestionAnswers.Count;
+                    var questionAnswersCorrectCount = 0;
+                    var questionAnswersIncorrectCount = 0;
+
+                    foreach (var questionAnswer in question.QuestionAnswers)
                     {
-                        throw new ArgumentException("No question with this id");
+                        if (questionAnswer.IsCorrect)
+                        {
+                            if (userAnswersToQuestion.FirstOrDefault(cqa => cqa.AnswerId == questionAnswer.Id) != null)
+                            {
+                                questionAnswersCorrectCount++;
+                            }
+                            else
+                            {
+                                questionAnswersIncorrectCount++;
+                            }
+                        }
+                        else
+                        {
+                            if (userAnswersToQuestion.FirstOrDefault(cqa => cqa.AnswerId == questionAnswer.Id) == null)
+                            {
+                                questionAnswersCorrectCount++;
+                            }
+                            else
+                            {
+                                questionAnswersIncorrectCount++;
+                            }
+                        }
                     }
 
-                    var answer = testQuestion.QuestionAnswers.FirstOrDefault(qa => qa.Id == qapair.AnswerId);
-                    if (answer == null)
-                    {
-                        throw new ArgumentException("No answer with this id");
-                    }
-
-                    if (answer.IsCorrect)
+                    var totalPointsForQuestion = question.Points * questionAnswersCorrectCount / questionAnswersCount;
+                    if (totalPointsForQuestion > 0)
                     {
                         testResult.CorrectCount++;
-                        testResult.Points += testQuestion.Points;
                     }
                     else
                     {
                         testResult.IncorrectCount++;
                     }
+
+                    testResult.Points += totalPointsForQuestion;
                 }
             }
 

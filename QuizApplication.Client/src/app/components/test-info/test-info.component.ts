@@ -26,6 +26,7 @@ export class TestInfoComponent implements OnInit {
     this.testId = Number(this.route.snapshot.paramMap.get('id'));
     this.testService.getTest(this.testId).subscribe((data: TestDetailed) => {
       this.test = data;
+      console.log(this.test);
       this.loading = false;
     },
     error => {

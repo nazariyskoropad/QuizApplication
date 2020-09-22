@@ -1,22 +1,65 @@
-<div>
-    <button  class="btn btn-danger m-1" (click)="deleteTest(test.id)">
-        Delete
-      </button>
-      <button  class="btn btn-warning m-1" (click)="editTest(test.id)">
-        Edit
-      </button>
-    <h1>Name: {{test.name}}</h1>
-    <p>Description: {{test.description}}</p>
-    <ol>
-        <li *ngFor="let question of test.questions">
-            <p>{{question.description}}</p>
+<div >
+    <br><br>
+    <div *ngIf='loading' class='col-9 center text-center'>
+      <br><br>
+      <span class="spinner-border spinner-border-bg mr-1"></span>
+    </div>
+    <div *ngIf='!loading'>
+        <div>
+            <button  class="btn btn-danger m-1" (click)="deleteTest(test.id)">
+                Delete
+            </button>
+            <button  class="btn btn-warning m-1" (click)="editTest(test.id)">
+                Edit
+            </button>
+            <button class="btn btn-success m-1" [routerLink]="['/', 'admin', 'tests', test.id, 'manage-access']">
+                Manage access to test
+            </button>
+
+            <h1>Name: {{test.name}}</h1>
+            <p>Description: {{test.description}}</p>
+            <p>Total points: {{test.points}}</p>
             <ol>
-                <li *ngFor="let qa of question.questionAnswers">
-                    <p>{{qa.description}}  {{qa.isCorrect}}</p>
+                <li *ngFor="let question of test.questions">
+                    <p>{{question.description}}</p>
+                    <ol>
+                        <li *ngFor="let qa of question.questionAnswers">
+                            <p>{{qa.description}}  {{qa.isCorrect}}</p>
+                        </li>
+                    </ol>
+        
                 </li>
             </ol>
- 
-        </li>
-    </ol>
 
+
+            <h3>All test results</h3>
+            
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Points</th>
+                    <th scope="col">Correct</th>
+                    <th scope="col">Incorrect</th>
+                    <th scope="col">Skipped</th>
+                    <th scope="col">Started at</th>
+                    <th scope="col">Finished at</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let testResult of test.testResults; let i = index">
+                        <th>{{i+1}}</th>
+                        <td>{{testResult.userName}}</td>
+                        <td>{{testResult.points}}/{{test.points}}</td>
+                        <td>{{testResult.correctCount}}</td>
+                        <td>{{testResult.incorrectCount}}</td>
+                        <td>{{testResult.skippedCount}}</td>
+                        <td>{{testResult.startedAt | date:'medium'}}</td>
+                        <td>{{testResult.endedAt | date:'medium'}}</td>  
+                    </tr>
+                </tbody>
+              </table>
+        </div>
+    </div>
 </div>

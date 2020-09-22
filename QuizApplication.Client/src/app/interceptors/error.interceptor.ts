@@ -21,10 +21,10 @@ export class ErrorInterceptor implements HttpInterceptor {
                 alert('Server is not responding');
             }
   
-            else if (err.status === 401) {
-                this.authenticationService.logout();
-                this.router.navigate(['/login']);
-            }
+            // if ([401, 403].includes(err.status) && this.authenticationService.currentAdminValue) {
+            //     // auto logout if 401 or 403 response returned from api
+            //     this.authenticationService.logout();
+            // }
   
             else 
                 console.log(request, err, err.error);

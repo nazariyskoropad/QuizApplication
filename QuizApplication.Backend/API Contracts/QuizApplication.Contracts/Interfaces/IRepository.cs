@@ -18,10 +18,13 @@ namespace QuizApplication.Contracts.Interfaces
         Task<IReadOnlyList<TEntity>> GetAllAsync();
 
         Task<TEntity> AddAsync(TEntity entity);
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
 
         Task UpdateAsync(TEntity entity);
+        Task<TEntity> Update(TEntity entityToUpdate);
 
         Task DeleteAsync(TEntity entity);
+        Task DeleteRangeAsync(IEnumerable<TEntity> entities);
 
         IQueryable<TEntity> GetWithInclude<TEntity>(
             Expression<Func<TEntity, bool>> predicate,

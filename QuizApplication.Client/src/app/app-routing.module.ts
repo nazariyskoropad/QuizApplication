@@ -7,18 +7,21 @@ import { TestListComponent } from './components/test-list/test-list.component';
 import { TestInfoComponent } from './components/test-info/test-info.component';
 import { TestAddComponent } from './components/test-add/test-add.component';
 import { TestEditComponent } from './components/test-edit/test-edit.component';
+import { TestPassComponent } from './components/test-pass/test-pass.component';
+import { TestManageAccessComponent } from './components/test-manage-access/test-manage-access.component';
 
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  //{ path: 'tests/:id', component: TestPassComponent},
+  { path: 'tests/:testId/:link', component: TestPassComponent},
+
   { path: 'login', component: LoginComponent },
+  { path: 'admin/tests', component: TestListComponent, canActivate: [AuthGuard]},
   { path: 'admin/tests/add', component: TestAddComponent, canActivate: [AuthGuard]},
   { path: 'admin/tests/:id', component: TestInfoComponent, canActivate: [AuthGuard]},
+  { path: 'admin/tests/:id/manage-access', component: TestManageAccessComponent, canActivate: [AuthGuard]},
   { path: 'admin/tests/:id/edit', component: TestEditComponent, canActivate: [AuthGuard]},
-  { path: 'admin/tests', component: TestListComponent, canActivate: [AuthGuard]},
-
-
-
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];
 

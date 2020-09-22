@@ -35,9 +35,9 @@ namespace QuizApplication.BusinessLogic.Services
                 var jwtToken = GenerateJSONWebToken(user);
                 var refreshToken = GenerateRefreshToken(user);
                 user.RefreshTokens.Add(refreshToken);
-                await _adminRepository.UpdateAsync(user);
+                var updatedUser = await _adminRepository.Update(user);
 
-                return new AuthenticateResponseDto(user, jwtToken, refreshToken.Token);
+                return new AuthenticateResponseDto(updatedUser, jwtToken, refreshToken.Token);
             }
 
             return null;
@@ -51,12 +51,12 @@ namespace QuizApplication.BusinessLogic.Services
 
             var admin = admins.FirstOrDefault(a => a.RefreshTokens.Any(t => t.Token == token));
 
-            if (admin == null) 
+            if (admin == null)
                 return null;
 
             var refreshToken = admin.RefreshTokens.Single(x => x.Token == token);
 
-            if (!refreshToken.IsActive) 
+            if (!refreshToken.IsActive)
                 return null;
 
             var newRefreshToken = GenerateRefreshToken(admin);
@@ -64,11 +64,11 @@ namespace QuizApplication.BusinessLogic.Services
             refreshToken.ReplacedByToken = newRefreshToken.Token;
             admin.RefreshTokens.Add(newRefreshToken);
 
-            await _adminRepository.UpdateAsync(admin);
+            var updatedAdmin = await _adminRepository.Update(admin);
 
-            var jwtToken = GenerateJSONWebToken(admin);
+            var jwtToken = GenerateJSONWebToken(updatedAdmin);
 
-            return new AuthenticateResponseDto(admin, jwtToken, newRefreshToken.Token);
+            return new AuthenticateResponseDto(updatedAdmin, jwtToken, newRefreshToken.Token);
         }
 
         public async Task<bool> RevokeTokenAsync(string token)
@@ -124,7 +124,7 @@ namespace QuizApplication.BusinessLogic.Services
               _config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
               claims,
-              expires: DateTime.Now.AddMinutes(30),
+              expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

@@ -1,0 +1,34 @@
+<div *ngIf='loading' class='col-9 center text-center'>
+    <br><br>
+    <span class="spinner-border spinner-border-bg mr-1"></span>
+</div>
+<div *ngIf='!loading'>
+    <h2>Created links:</h2>
+    <div *ngIf="!testAccessConfigs.length">
+        <p>No links yet</p>
+    </div>
+    <div *ngIf="testAccessConfigs.length">
+        <ol>
+            <li *ngFor="let testConfig of testAccessConfigs">  
+                <button type="button" class="btn btn-danger float-right" (click)="deleteLink(testConfig.id)" >Delete </button>
+                <p>Username: {{testConfig.userName}}</p>
+                <p>Unique link: http://localhost:4200/tests/{{testId}}/{{testConfig.uniqueLink}}</p>
+            </li>
+        </ol>    
+    </div>
+
+    <form [formGroup]="addLinksForm">
+        <div formArrayName="links" *ngFor="let item of addLinksForm.get('links')['controls']; let i = index;">
+            <div class="form-group" [formGroupName]="i">
+                <label for="UserName{i}">Username </label>
+                <input type="text" class="form-control" id="UserName{i}" formControlName="UserName">
+            </div>
+        </div>
+        <div *ngIf="addLinksForm.get('links')['controls'].length">
+            <button type="button" class="btn btn-success float-right" (click)="submitForm()"> Submit </button>
+        </div>
+    </form>
+    
+    <button type="button" class="btn btn-dark" (click)="addLink()"> Add one more link </button>
+</div>
+

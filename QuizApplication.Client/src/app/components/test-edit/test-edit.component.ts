@@ -14,6 +14,7 @@ import { Question } from 'src/app/models/question';
 export class TestEditComponent implements OnInit {
 
   loading = false;
+  testId: number;
   test: TestDetailed;
   editForm: FormGroup;
   submitted = false;
@@ -29,8 +30,8 @@ export class TestEditComponent implements OnInit {
   }
 
   loadTestInfo() {
-    let testId = Number(this.route.snapshot.paramMap.get('id'));
-    this.testService.getTest(testId).subscribe((data: TestDetailed) => {
+    this.testId = Number(this.route.snapshot.paramMap.get('id'));
+    this.testService.getTest(this.testId).subscribe((data: TestDetailed) => {
       this.test = data;
       this.loading = false;
       this.initForm();
@@ -46,10 +47,8 @@ export class TestEditComponent implements OnInit {
       TestDescription: [this.test.description, [Validators.required, Validators.maxLength(200)]],
       TestTimeLimit: [this.test.timeLimit, Validators.required],
       TestPoints: [this.test.points, Validators.required],
-      TestUserName: [this.test.userName, [Validators.required, Validators.maxLength(200)]],
       TestStartsAt: [this.test.startsAt, Validators.required],
       TestEndsAt: [this.test.endsAt, Validators.required],
-      TestRunsNumber: [this.test.runsNumber, Validators.required],
       Questions: this.fb.array([])
     });
 
@@ -119,11 +118,15 @@ export class TestEditComponent implements OnInit {
       return;
     }
 
+    if(!this.validatePoints())
+    {
+      alert('Sum of points for question is not equal to test points')
+      return;
+    }
+
     this.initializeTest();
 
-    console.log(this.test);
-
-    this.testService.addTest(this.test).subscribe((data: TestDetailed) => {
+    this.testService.editTest(this.test, this.testId).subscribe((data: TestDetailed) => {
       alert('Tests edited successfully!');
       this.router.navigate(['/admin/tests', data.id]);
     }, error => {
@@ -131,21 +134,27 @@ export class TestEditComponent implements OnInit {
     })
   } 
 
+  validatePoints() {
+    let questionPoints = 0;
+    this.f.Questions.value.forEach(q => questionPoints += q.QuestionPoints)
+    return this.f.TestPoints.value == questionPoints;
+  }
+
   initializeTest() {
     this.test = new TestDetailed();
 
+    this.test.id = this.testId;
     this.test.name = this.f.TestName.value;
     this.test.description = this.f.TestDescription.value;
     this.test.points = this.f.TestPoints.value;
-    this.test.runsNumber = this.f.TestRunsNumber.value;
     this.test.timeLimit = this.f.TestTimeLimit.value;
-    this.test.userName = this.f.TestUserName.value;
     this.test.startsAt = this.f.TestStartsAt.value;
     this.test.endsAt = this.f.TestEndsAt.value;
     
     for (let question of this.f.Questions.value) {
       let newQuestion = new Question()
 
+      newQuestion.testId = this.testId;
       newQuestion.description = question.QuestionDescription;
       newQuestion.points = question.QuestionPoints;
       newQuestion.timeLimit = question.QuestionTimeLimit;

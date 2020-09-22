@@ -1,0 +1,103 @@
+<div >
+    <br><br>
+    <div *ngIf='!loading' class='col-9 center text-center'>
+      <br><br>
+      <span class="spinner-border spinner-border-bg mr-1"></span>
+    </div>
+    <div *ngIf='loading'>
+        <div *ngIf='!passed'>
+            <h1>{{test.name}}</h1>
+            <p>Description: {{test.description}}</p>
+
+            <div *ngIf='!startTestConfirmed'>
+                <div *ngIf='testAccessConfig.userName'>
+                    <p>Your username: {{testAccessConfig.userName}}</p> 
+                </div>
+                <div *ngIf='!testAccessConfig.userName'>
+                    <p>Please enter your username:</p> 
+                    <form [formGroup]="passForm" (ngSubmit)="finishTest()">
+                        <div class="form-group">
+                            <label for="TestUserName">Username </label>
+                            <input type="text" class="form-control" id="TestUserName" formControlName="TestUserName"
+                            [ngClass]="{ 'is-invalid': nameEntered && f.TestUserName.errors }">           
+                            <div *ngIf="nameEntered && f.TestUserName.errors" class="invalid-feedback">
+                                <div *ngIf="f.TestUserName.errors.maxlength">Max length is 200 symbols</div>
+                                <div *ngIf="f.TestUserName.errors.required">UserName is required</div>
+                            </div>  
+                        </div>
+                    </form>
+                </div>
+                <button class="btn btn-success d-flex justify-content-center" (click)="startTest()">Start test</button>
+            </div>
+
+            <div *ngIf='startTestConfirmed'>
+                <p>Timer: {{hours| number:'2.0-0'}}:{{minutes | number:'2.0-0'}}:{{seconds|number:'2.0-0'}}</p>
+                    <div>
+                        <form [formGroup]="passForm"> 
+                            <div formArrayName="Questions" >
+                            <mat-tab-group [(selectedIndex)]="selectedIndex">
+                                
+                                <mat-tab *ngFor="let question of questionForms.controls; let i=index" [formGroupName]="i" label={{i+1}}>
+                                    <p class="qDescription m-3"> {{question.get("QuestionDescription").value}} </p>
+
+                                    <div formArrayName="QuestionAnswers" class="offset-1">
+                                        <div *ngFor="let qa of question.get('QuestionAnswers').controls; let j=index" [formGroupName]="j"  class="rounded offset">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                    <div class="custom-control custom-checkbox"   >
+                                                        <input class="custom-control-input" id="cb-{{i}},{{j}}" type="checkbox" aria-label="Checkbox for following text input"  formControlName="QaIsTrue">
+                                                        <label class="custom-control-label" for="cb-{{i}},{{j}}">{{qa.get("QaDescription").value}}</label>
+                                                    </div>
+                                                    </div>
+                                                </div>                       
+                                            </div> 
+                                        </div>
+                                    </div>          
+                                </mat-tab>                           
+                            </mat-tab-group>
+                        </div>
+                    </form>
+                    <div class="container">
+                        <div class="row justify-content-between">
+                            <button class="btn btn-dark col-2 m-2" (click)="previousQuestion()">Prev</button>
+                            <button class="btn btn-dark col-2 m-2" (click)="nextQuestion()">Next</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success container" (click)="finishTest()">
+                        Finish test
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf='passed'>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Points</th>
+                    <th scope="col">Correct</th>
+                    <th scope="col">Incorrect</th>
+                    <th scope="col">Skipped</th>
+                    <th scope="col">Started at</th>
+                    <th scope="col">Finished at</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{testResult.userName}}</td>
+                        <td>{{testResult.points}}/{{test.points}}</td>
+                        <td>{{testResult.correctCount}}</td>
+                        <td>{{testResult.incorrectCount}}</td>
+                        <td>{{testResult.skippedCount}}</td>
+                        <td>{{testResult.startedAt | date:'medium'}}</td>
+                        <td>{{testResult.endedAt | date:'medium'}}</td>  
+                    </tr>
+                </tbody>
+              </table>
+        </div>
+
+      
+    </div>
+</div>
